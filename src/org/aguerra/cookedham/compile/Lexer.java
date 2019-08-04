@@ -59,14 +59,14 @@ public class Lexer {
 
     private Token createToken(String token) {
         if(isInteger(token)) return new Token(token, Type.INTEGER_LITERAL);
-        if(isDecimal(token)) return new Token(token, Type.DECIMAL_LITERAL);
-        if(isBool(token)) return new Token(token, Type.BOOL_LITERAL);
-        if(isCharacter(token)) return new Token(token, Type.CHARACTER_LITERAL);
-        if(isString(token)) return new Token(token, Type.STRING_LITERAL);
-        if(isKeyword(token)) return new Token(token, Type.KEYWORD);
-        if(isIdentifier(token)) return new Token(token, Type.IDENTIFIER);
-        if(isOperator(token)) return new Token(token, Type.OPERATOR);
-        if(isAssignment(token)) return new Token(token, Type.ASSIGNMENT);
+        else if(isDecimal(token)) return new Token(token, Type.DECIMAL_LITERAL);
+        else if(isBool(token)) return new Token(token, Type.BOOL_LITERAL);
+        else if(isCharacter(token)) return new Token(token, Type.CHARACTER_LITERAL);
+        else if(isString(token)) return new Token(token, Type.STRING_LITERAL);
+        else if(isKeyword(token)) return new Token(token, Type.KEYWORD);
+        else if(isIdentifier(token)) return new Token(token, Type.IDENTIFIER);
+        else if(isOperator(token)) return new Token(token, Type.OPERATOR);
+        else if(isAssignment(token)) return new Token(token, Type.ASSIGNMENT);
 
         return new Token(token, Type.UNKNOWN);
     }
@@ -128,7 +128,7 @@ public class Lexer {
     }
 
     private boolean isOpAssignment(String token) {
-        return token.length() == 2 && OPERATORS.contains(token.charAt(1) + "");
+        return token.length() == 2 && OPERATORS.contains(token.charAt(0) + "") && token.charAt(1) == '=';
     }
 
     private boolean isKeyword(String token) {
@@ -144,5 +144,9 @@ public class Lexer {
 
     public ArrayList<Token> getTokens() {
         return tokens;
+    }
+
+    public void throwError(String msg) {
+        System.err.println(msg);
     }
 }
