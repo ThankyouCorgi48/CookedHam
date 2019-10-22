@@ -1,4 +1,4 @@
-var year = 2019
-var pi_three = 3.14
-var greeting = "hello world"
-var grade = 'c'
+int year = 2019;
+decimal pi_three = 3.14;
+string greeting = "hello world";
+char grade = 'c';

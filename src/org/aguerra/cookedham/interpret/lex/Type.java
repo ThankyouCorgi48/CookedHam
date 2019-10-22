@@ -1,0 +1,25 @@
+package org.aguerra.cookedham.interpret.lex;
+
+public enum Type {
+    // Single-character tokens
+    LEFT_PAREN, RIGHT_PAREN, LEFT_BRACE, RIGHT_BRACE, COMMA,
+    DOT, SEMICOLON, ASSIGN, PLUS, MINUS, STAR, SLASH, MOD,
+    LEFT_ANGLE_BRACE, RIGHT_ANGLE_BRACE, NOT,
+
+    // Two character tokens
+    PLUS_ASSIGN, MINUS_ASSIGN, STAR_ASSIGN, SLASH_ASSIGN,
+    MOD_ASSIGN, EQUALS, GREATER_EQUAL, LESSER_EQUAL, NOT_EQUAL,
+    AND, OR,
+
+    // Literals
+    INT_LITERAL, DECIMAL_LITERAL, CHAR_LITERAL, STRING_LITERAL,
+
+    // Data Types and Identifier
+
+    INT, DECIMAL, CHAR, STRING, BOOLEAN, IDENTIFIER,
+
+    // Keywords
+    CLASS, CONST, ELSE, FALSE, FOR, IF, NULL, RETURN, SUPER, THIS, TRUE, WHILE, PRINT,
+
+    EOF,
+}
