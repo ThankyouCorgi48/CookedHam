@@ -13,6 +13,7 @@ public class AstGenerator {
         writer.println("package org.aguerra.cookedham.interpret.parse;");
         writer.println();
         writer.println("import org.aguerra.cookedham.interpret.lex.Token;");
+        writer.println("import org.aguerra.cookedham.interpret.lex.Type;");
         writer.println("import java.util.List;");
         writer.println();
         writer.println("public abstract class " + baseClass + " {");
@@ -80,24 +81,31 @@ public class AstGenerator {
         String outputDir = "C:\\Users\\andre\\IdeaProjects\\CookedHam\\src\\org\\aguerra\\cookedham\\interpret\\parse";
         try {
             defineAst(outputDir, "Expression", Arrays.asList(
-                    "Assign   : Token name, Expression value",
-                    "Binary   : Expression left, Token operator, Expression right",
-                    "Call     : Expression calle, Token paren, List<Expression> arguments",
-                    "Grouping : Expression expression",
-                    "Literal  : Object value",
-                    "Logical  : Expression left, Token operator, Expression right",
-                    "Unary    : Token operator, Expression right",
-                    "Variable : Token name"
+                    "Assign      : Token name, Expression value, Expression arrayIndex",
+                    "ArrayAccess : Token identifier, Expression index",
+                    "ArrayBlock  : List<Expression> elements",
+                    "Binary      : Expression left, Token operator, Expression right",
+                    "Break       : Statement loop",
+                    "Call        : Expression calle, Token paren, List<Expression> arguments",
+                    "Grouping    : Expression expression",
+                    "Len         : Expression expression, Token keyword",
+                    "Literal     : Object value",
+                    "Logical     : Expression left, Token operator, Expression right",
+                    "Ternary     : Expression condition, Expression truthExpression, Expression falseExpression",
+                    "Unary       : Token operator, Expression right",
+                    "Variable    : Token name"
             ));
 
             defineAst(outputDir, "Statement", Arrays.asList(
                     "Block          : List<Statement> statements",
                     "LineExpression : Expression expression",
                     "If             : Expression condition, Statement thenBranch, Statement elseBranch",
-                    "Function       : Token name, List<Token> params, List<Statement> body, Type returnType",
+                    "Function       : Token name, List<Token> params, List<Type> paramTypes, List<Statement> body, Type returnType",
                     "Print          : Expression expression",
-                    "Variable       : Token name, Type type, Expression init",
+                    "Return         : Token keyword, Expression value",
+                    "Variable       : Token name, Type type, Type arrayType, Expression init",
                     "For            : Statement initializer, Expression condition, Expression increment, Statement body",
+                    "ForEach        : Statement definition, Expression array, Statement body",
                     "While          : Expression condition, Statement body"
             ));
         } catch (IOException e) {

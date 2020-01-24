@@ -13,7 +13,22 @@ public class Lexer {
         //TODO: Implement BufferedInputStream
 
         tokens = new ArrayList<>();
-        tokenScanner = new TokenScanner(file.getPath());
+        tokenScanner = new TokenScanner(file);
+
+        while (tokenScanner.hasNext()) {
+            String token = tokenScanner.nextToken();
+
+            if(!token.equals("")) tokens.add(createToken(token));
+        }
+
+        tokens.add(new Token("", Type.EOF, tokenScanner.getLineNum()));
+    }
+
+    public Lexer(String line) {
+        //TODO: Implement BufferedInputStream
+
+        tokens = new ArrayList<>();
+        tokenScanner = new TokenScanner(line);
 
         while (tokenScanner.hasNext()) {
             String token = tokenScanner.nextToken();
@@ -31,9 +46,12 @@ public class Lexer {
             case ")" : return new Token(token, Type.RIGHT_PAREN, tokenScanner.getLineNum());
             case "{" : return new Token(token, Type.LEFT_BRACE, tokenScanner.getLineNum());
             case "}" : return new Token(token, Type.RIGHT_BRACE, tokenScanner.getLineNum());
+            case "[" : return new Token(token, Type.LEFT_BRACKET, tokenScanner.getLineNum());
+            case "]" : return new Token(token, Type.RIGHT_BRACKET, tokenScanner.getLineNum());
             case "," : return new Token(token, Type.COMMA, tokenScanner.getLineNum());
             case "." : return new Token(token, Type.DOT, tokenScanner.getLineNum());
             case ";" : return new Token(token, Type.SEMICOLON, tokenScanner.getLineNum());
+            case ":" : return new Token(token, Type.COLON, tokenScanner.getLineNum());
             case "=" : return new Token(token, Type.ASSIGN, tokenScanner.getLineNum());
             case "+" : return new Token(token, Type.PLUS, tokenScanner.getLineNum());
             case "-" : return new Token(token, Type.MINUS, tokenScanner.getLineNum());
@@ -43,26 +61,37 @@ public class Lexer {
             case "<" : return new Token(token, Type.LEFT_ANGLE_BRACE, tokenScanner.getLineNum());
             case ">" : return new Token(token, Type.RIGHT_ANGLE_BRACE, tokenScanner.getLineNum());
             case "!" : return new Token(token, Type.NOT, tokenScanner.getLineNum());
+            case "&" : return new Token(token, Type.AMPERSAND, tokenScanner.getLineNum());
+            case "|" : return new Token(token, Type.PIPE, tokenScanner.getLineNum());
+            case "^" : return new Token(token, Type.XOR, tokenScanner.getLineNum());
+            case "~" : return new Token(token, Type.TILDA, tokenScanner.getLineNum());
+            case "?" : return new Token(token, Type.QUESTION, tokenScanner.getLineNum());
 
             case "+=" : return new Token(token, Type.PLUS_ASSIGN, tokenScanner.getLineNum());
             case "-=" : return new Token(token, Type.MINUS_ASSIGN, tokenScanner.getLineNum());
             case "*=" : return new Token(token, Type.STAR_ASSIGN, tokenScanner.getLineNum());
             case "/=" : return new Token(token, Type.SLASH_ASSIGN, tokenScanner.getLineNum());
             case "%=" : return new Token(token, Type.MOD_ASSIGN, tokenScanner.getLineNum());
+            case "**" : return new Token(token, Type.POW, tokenScanner.getLineNum());
             case "==" : return new Token(token, Type.EQUALS, tokenScanner.getLineNum());
             case "<=" : return new Token(token, Type.LESSER_EQUAL, tokenScanner.getLineNum());
             case ">=" : return new Token(token, Type.GREATER_EQUAL, tokenScanner.getLineNum());
             case "!=" : return new Token(token, Type.NOT_EQUAL, tokenScanner.getLineNum());
             case "&&" : return new Token(token, Type.AND, tokenScanner.getLineNum());
             case "||" : return new Token(token, Type.OR, tokenScanner.getLineNum());
+            case "<<" : return new Token(token, Type.LEFT_SHIFT, tokenScanner.getLineNum());
+            case ">>" : return new Token(token, Type.RIGHT_SHIFT, tokenScanner.getLineNum());
 
             case "int"     : return new Token(token, Type.INT, tokenScanner.getLineNum());
             case "decimal" : return new Token(token, Type.DECIMAL, tokenScanner.getLineNum());
             case "char"    : return new Token(token, Type.CHAR, tokenScanner.getLineNum());
             case "string"  : return new Token(token, Type.STRING, tokenScanner.getLineNum());
             case "boolean" : return new Token(token, Type.BOOLEAN, tokenScanner.getLineNum());
+            case "array" : return new Token(token, Type.ARRAY, tokenScanner.getLineNum());
+            case "void" : return new Token(token, Type.VOID, tokenScanner.getLineNum());
 
             case "print" : return new Token(token, Type.PRINT, tokenScanner.getLineNum());
+            case "break" : return new Token(token, Type.BREAK, tokenScanner.getLineNum());
             case "class" : return new Token(token, Type.CLASS, tokenScanner.getLineNum());
             case "const" : return new Token(token, Type.CONST, tokenScanner.getLineNum());
             case "if" : return new Token(token, Type.IF, tokenScanner.getLineNum());
@@ -75,6 +104,7 @@ public class Lexer {
             case "this" : return new Token(token, Type.THIS, tokenScanner.getLineNum());
             case "false" : return new Token(token, Type.FALSE, tokenScanner.getLineNum());
             case "true" : return new Token(token, Type.TRUE, tokenScanner.getLineNum());
+            case "len" : return new Token(token, Type.LEN, tokenScanner.getLineNum());
 
             case "" : return null;
         }
@@ -83,7 +113,7 @@ public class Lexer {
         if(isInteger(token)) return new Token(token, Type.INT_LITERAL, tokenScanner.getLineNum());
         else if(isDecimal(token)) return new Token(token, Type.DECIMAL_LITERAL, tokenScanner.getLineNum());
         else if(isCharacter(token)) return new Token(token, Type.CHAR_LITERAL, tokenScanner.getLineNum());
-        else if(isString(token)) return new Token(token, Type.STRING_LITERAL, tokenScanner.getLineNum());
+        else if(isString(token)) return new Token(token.substring(1,token.length()-1), Type.STRING_LITERAL, tokenScanner.getLineNum());
         else if(isIdentifier(token)) return new Token(token, Type.IDENTIFIER, tokenScanner.getLineNum());
 
         new Error("Unexpected Character").invoke();
@@ -136,7 +166,7 @@ public class Lexer {
     }
 
     private boolean isValidIdentifierChar(char character) {
-        return Character.isAlphabetic(character) || character == '_';
+        return Character.isAlphabetic(character) || Character.isDigit(character) || character == '-' || character == '_';
     }
 
     private boolean isOperator(String token) {

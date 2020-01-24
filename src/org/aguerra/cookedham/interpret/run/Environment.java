@@ -3,13 +3,14 @@ package org.aguerra.cookedham.interpret.run;
 import org.aguerra.cookedham.interpret.lex.Token;
 import org.aguerra.cookedham.interpret.lex.Type;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
 
 class Environment {
     private Environment enclosingScope;
-    private final Map<String, Variable> values = new HashMap<>();
+    private final Map<String, Array> values = new HashMap<>();
 
     public Environment() {
         enclosingScope = null;
@@ -31,7 +32,7 @@ class Environment {
     public void assign(Token name, Object value) {
         if (values.containsKey(name.getToken())) {
             checkType(getTypeOfVariable(name.getToken()), value, name);
-            values.put(name.getToken(), new Variable(value, name.getType()));
+            values.put(name.getToken(), new Array(value, name.getType()));
             return;
         }
 
@@ -46,7 +47,7 @@ class Environment {
 
     public void define(String name, Object value) {
         //TODO: define with proper type
-        values.put(name, new Variable(value, getType(value)));
+        values.put(name, new Array(value, getType(value)));
     }
 
     private Type getTypeOfVariable(String key) {
@@ -60,6 +61,7 @@ class Environment {
         else if(value instanceof Boolean) return Type.BOOLEAN;
         else if(value instanceof Character) return Type.CHAR;
         else if(value instanceof String) return Type.STRING;
+        else if(value instanceof ArrayList) return Type.ARRAY;
 
         //TODO: Finish error
         //throw new RuntimeError(name, "Invalid type: ");

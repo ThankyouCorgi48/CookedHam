@@ -9,6 +9,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.List;
 
 public class CookedHam {
@@ -17,16 +18,17 @@ public class CookedHam {
     static boolean hadRuntimeError = false;
 
     public static void main(String[] args) throws IOException {
-        if (args.length > 1) {
+        /*if (args.length > 1) {
             System.out.println("Usage: jham [script]");
             System.exit(64);
         } else if (args.length == 1) {
             runFile("C:\\Users\\andre\\IdeaProjects\\CookedHam\\test resources\\expressions.ch"); //args[0]
         } else {
             runPrompt();
-        }
+        }*/
 
-        runFile("C:\\Users\\andre\\IdeaProjects\\CookedHam\\test resources\\expressions.ch"); //args[0]
+        runFile("C:\\Users\\andre\\IdeaProjects\\CookedHam\\test resources\\playground.ch"); //args[0]
+        //runPrompt();
     }
 
     private static void runFile(String path) throws IOException {
@@ -40,13 +42,14 @@ public class CookedHam {
         BufferedReader reader = new BufferedReader(input);
 
         for (;;) {
-            System.out.print("> ");
+            System.out.print(">> ");
             run(reader.readLine());
         }
     }
 
     private static void run(String path) {
         Lexer lexer = new Lexer(new File(path));
+
         List<Token> tokens = lexer.getTokens();
 
         Parser parser = new Parser(tokens);
@@ -60,9 +63,19 @@ public class CookedHam {
         interpreter.interpret(statements);
     }
 
-    static void runtimeError(RuntimeError error) {
+    public static void runtimeError(RuntimeError error) {
         System.err.println(error.getMessage() +
                 "\n[line " + error.token.getLineNum() + "]");
         hadRuntimeError = true;
+    }
+
+    public static void error(int line, String message) {
+        report(line, "", message);
+    }
+
+    private static void report(int line, String where, String message) {
+        System.err.println(
+                "[line " + line + "] Error" + where + ": " + message);
+        hadError = true;
     }
 }

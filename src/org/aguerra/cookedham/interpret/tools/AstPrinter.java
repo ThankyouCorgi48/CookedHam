@@ -38,8 +38,28 @@ public class AstPrinter implements Expression.Visitor<String> {
     }
 
     @Override
+    public String visitBreakExpression(Expression.Break expression) {
+        return null;
+    }
+
+    @Override
+    public String visitArrayAccessExpression(Expression.ArrayAccess expression) {
+        return null;
+    }
+
+    @Override
+    public String visitArrayBlockExpression(Expression.ArrayBlock expression) {
+        return null;
+    }
+
+    @Override
     public String visitLogicalExpression(Expression.Logical expression) {
         //TODO: finish logic print
+        return null;
+    }
+
+    @Override
+    public String visitTernaryExpression(Expression.Ternary expression) {
         return null;
     }
 
@@ -48,7 +68,10 @@ public class AstPrinter implements Expression.Visitor<String> {
         return null;
     }
 
-
+    @Override
+    public String visitLenExpression(Expression.Len expression) {
+        return null;
+    }
 
     @Override
     public String visitVariableExpression(Expression.Variable expression) {

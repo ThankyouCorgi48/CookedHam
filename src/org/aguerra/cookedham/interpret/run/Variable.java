@@ -11,6 +11,11 @@ public class Variable {
         this.type = type;
     }
 
+    public Variable() {
+        this.value = null;
+        this.type = null;
+    }
+
     public Object getValue() {
         return value;
     }

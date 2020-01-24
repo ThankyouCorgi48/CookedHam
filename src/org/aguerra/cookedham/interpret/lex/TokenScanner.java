@@ -3,6 +3,7 @@ package org.aguerra.cookedham.interpret.lex;
 import org.aguerra.cookedham.interpret.error.Error;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
@@ -15,14 +16,27 @@ public class TokenScanner {
     private char currChar;
     private Pattern stringPattern;
 
-    public TokenScanner(String fileName) {
+    public TokenScanner(String line) {
         try {
             //TODO: Fix pattern to start with space character
             stringPattern = Pattern.compile("[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\";*|\\S+");
-            fileInputStream = new Scanner(new BufferedInputStream(new FileInputStream(fileName)));
+            fileInputStream = new Scanner(line);
 
             //currLine = fileInputStream.nextLine();
-            lineNumber = 1;
+            lineNumber = 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public TokenScanner(File file) {
+        try {
+            //TODO: Fix pattern to start with space character
+            stringPattern = Pattern.compile("[^\"\\\\]*(?:\\\\.[^\"\\\\]*)*\";*|\\S+");
+            fileInputStream = new Scanner(new BufferedInputStream(new FileInputStream(file.getPath())));
+
+            //currLine = fileInputStream.nextLine();
+            lineNumber = 0;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -31,7 +45,7 @@ public class TokenScanner {
     public String nextToken() {
         //TODO: throw error if random characters after string, etc. "hello wor"ld
         //TODO: Fix lexing for single character lines
-
+        lineIndex++;
         return fileInputStream.next();
     }
 
@@ -65,7 +79,11 @@ public class TokenScanner {
 
         do {
             if(currChar == '\"')  {
-                handleString();
+                do {
+                    lineIndex++;
+                    currChar = currLine.charAt(lineIndex);
+                } while(currChar != '"');
+                endToken = lineIndex;
                 break;
             }
             currChar = currLine.charAt(lineIndex);

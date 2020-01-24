@@ -2,7 +2,6 @@ package org.aguerra.cookedham.interpret.parse;
 
 import org.aguerra.cookedham.interpret.lex.Token;
 import org.aguerra.cookedham.interpret.lex.Type;
-
 import java.util.List;
 
 public abstract class Statement {
@@ -12,8 +11,10 @@ public abstract class Statement {
         public R visitIfStatement(If statement);
         public R visitFunctionStatement(Function statement);
         public R visitPrintStatement(Print statement);
+        public R visitReturnStatement(Return statement);
         public R visitVariableStatement(Variable statement);
         public R visitForStatement(For statement);
+        public R visitForEachStatement(ForEach statement);
         public R visitWhileStatement(While statement);
     }
 
@@ -56,9 +57,10 @@ public abstract class Statement {
         public final Statement elseBranch;
     }
     public static class Function extends Statement {
-        public Function(Token name, List<Token> params, List<Statement> body, Type returnType) {
+        public Function(Token name, List<Token> params, List<Type> paramTypes, List<Statement> body, Type returnType) {
             this.name = name;
             this.params = params;
+            this.paramTypes = paramTypes;
             this.body = body;
             this.returnType = returnType;
         }
@@ -69,6 +71,7 @@ public abstract class Statement {
 
         public final Token name;
         public final List<Token> params;
+        public final List<Type> paramTypes;
         public final List<Statement> body;
         public final Type returnType;
     }
@@ -83,10 +86,24 @@ public abstract class Statement {
 
         public final Expression expression;
     }
+    public static class Return extends Statement {
+        public Return(Token keyword, Expression value) {
+            this.keyword = keyword;
+            this.value = value;
+        }
+
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitReturnStatement(this);
+        }
+
+        public final Token keyword;
+        public final Expression value;
+    }
     public static class Variable extends Statement {
-        public Variable(Token name, Type type, Expression init) {
+        public Variable(Token name, Type type, Type arrayType, Expression init) {
             this.name = name;
             this.type = type;
+            this.arrayType = arrayType;
             this.init = init;
         }
 
@@ -96,6 +113,7 @@ public abstract class Statement {
 
         public final Token name;
         public final Type type;
+        public final Type arrayType;
         public final Expression init;
     }
     public static class For extends Statement {
@@ -113,6 +131,21 @@ public abstract class Statement {
         public final Statement initializer;
         public final Expression condition;
         public final Expression increment;
+        public final Statement body;
+    }
+    public static class ForEach extends Statement {
+        public ForEach(Statement definition, Expression array, Statement body) {
+            this.definition = definition;
+            this.array = array;
+            this.body = body;
+        }
+
+        public <R> R accept(Visitor<R> visitor) {
+            return visitor.visitForEachStatement(this);
+        }
+
+        public final Statement definition;
+        public final Expression array;
         public final Statement body;
     }
     public static class While extends Statement {
